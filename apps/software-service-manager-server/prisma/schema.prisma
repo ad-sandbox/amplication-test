@@ -1,0 +1,42 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Service {
+  accessPoints AccessPoint[]
+  createdAt    DateTime      @default(now())
+  description  String?
+  developer    Developer?    @relation(fields: [developerId], references: [id])
+  developerId  String?
+  id           String        @id @default(cuid())
+  label        String
+  name         String        @unique
+  updatedAt    DateTime      @updatedAt
+}
+
+model AccessPoint {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  label       String
+  name        String
+  service     Service? @relation(fields: [serviceId], references: [id])
+  serviceId   String?
+  updatedAt   DateTime @updatedAt
+  url         String
+}
+
+model Developer {
+  createdAt DateTime  @default(now())
+  email     String?
+  id        String    @id @default(cuid())
+  name      String
+  services  Service[]
+  updatedAt DateTime  @updatedAt
+  username  String    @unique
+}
